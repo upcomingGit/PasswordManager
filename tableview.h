@@ -23,7 +23,7 @@ public slots:
     void delAction();
 
 private:
-    void addAction(QString username, QString password);
+    void addAction(QString description, QString username, QString password);
 
 };
 

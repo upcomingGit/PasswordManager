@@ -22,8 +22,9 @@ void TableView::readFromFile(QString filename)
     }
 
     QList<QPair<QString, QString> > list = passModel->getList();
+    QList<QString> description = passModel->getDescription();
     QDataStream in(&file);
-    in >> list;
+    in >> description >> list;
 
     int i;
 
@@ -37,7 +38,7 @@ void TableView::readFromFile(QString filename)
         for (i=0; i<list.size(); i++)
         {
             QPair<QString, QString> pair = list.at(i);
-            addAction(pair.first, pair.second);
+            addAction(description.at(i), pair.first, pair.second);
         }
     }
 }
@@ -52,8 +53,9 @@ void TableView::saveToFile(QString filename)
     }
 
     QList<QPair<QString, QString> > list = passModel->getList();
+    QList<QString> description = passModel->getDescription();
     QDataStream out(&file);
-    out << list;
+    out << description << list;
 
     file.close();
 }
@@ -64,14 +66,15 @@ void TableView::addAction()
 
     if (dialog.exec())
     {
+        QString description = dialog.description->text();
         QString username = dialog.username->text();
         QString password = dialog.password->text();
 
-        addAction(username, password);
+        addAction(description, username, password);
     }
 }
 
-void TableView::addAction(QString username, QString password)
+void TableView::addAction(QString description, QString username, QString password)
 {
     QList<QPair<QString, QString> > list = passModel->getList();
     QPair<QString, QString> pair(username, password);
@@ -80,8 +83,10 @@ void TableView::addAction(QString username, QString password)
     {
         passModel->insertRows(0, 1, QModelIndex());
         QModelIndex a = passModel->index(0, 0, QModelIndex());
-        passModel->setData(a, username, Qt::EditRole);
+        passModel->setData(a, description, Qt::EditRole);
         a = passModel->index(0, 1, QModelIndex());
+        passModel->setData(a, username, Qt::EditRole);
+        a = passModel->index(0, 2, QModelIndex());
         passModel->setData(a, password, Qt::EditRole);
     }
     else
@@ -96,27 +101,34 @@ void TableView::modAction()
     if (indexes.isEmpty())
         return;
     QModelIndex index, index1;
-    index = indexes.at(1);
+    index = indexes.at(0);
     index1 = passModel->index(index.row(), 0, QModelIndex());
-    QString username, password;
+    QString username, password, description;
     QVariant varName = passModel->data(index1, Qt::DisplayRole);
-    username = varName.toString();
+    description = varName.toString();
     index1 = passModel->index(index.row(), 1, QModelIndex());
+    varName = passModel->data(index1, Qt::DisplayRole);
+    username = varName.toString();
+    index1 = passModel->index(index.row(), 2, QModelIndex());
     varName = passModel->data(index1, Qt::DisplayRole);
     password = varName.toString();
 
     AddDialog dialog;
     dialog.setWindowTitle(tr("Edit a contact"));
+    dialog.description->setText(description);
     dialog.username->setText(username);
     dialog.password->setText(password);
 
     if (dialog.exec())
     {
+        QString descripMod = dialog.description->text();
         QString usernameMod = dialog.username->text();
         QString passwordMod = dialog.password->text();
         index1 = passModel->index(index.row(), 0, QModelIndex());
-        passModel->setData(index1, usernameMod, Qt::EditRole);
+        passModel->setData(index1, descripMod, Qt::EditRole);
         index1 = passModel->index(index.row(), 1, QModelIndex());
+        passModel->setData(index1, usernameMod, Qt::EditRole);
+        index1 = passModel->index(index.row(), 2, QModelIndex());
         passModel->setData(index1, passwordMod, Qt::EditRole);
     }
 }

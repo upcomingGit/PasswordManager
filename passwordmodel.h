@@ -4,6 +4,8 @@
 #include <QAbstractTableModel>
 #include <QList>
 
+#define NUMBEROFCOLUMNS 3
+
 class PasswordModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -19,8 +21,10 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
     QList<QPair<QString, QString> > getList();
+    QList<QString> getDescription();
 private:
     QList<QPair<QString, QString> > list;
+    QList<QString> description;
 };
 
 #endif

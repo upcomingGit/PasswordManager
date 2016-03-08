@@ -15,10 +15,12 @@ public:
 
     QLineEdit *username;
     QLineEdit *password;
+    QLineEdit *description;
 
 private:
     QLabel *nameLabel;
     QLabel *passLabel;
+    QLabel *desLabel;
     QPushButton *add;
     QPushButton *close;
 };

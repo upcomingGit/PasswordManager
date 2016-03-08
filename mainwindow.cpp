@@ -28,7 +28,7 @@ void MainWindow::createMenus()
     addAct = new QAction(tr("Add password"), this);
     toolsMenu->addAction(addAct);
     connect(addAct, SIGNAL(triggered()), table, SLOT(addAction()));
-    modAct = new QAction(tr("Modify entry"), this);
+    modAct = new QAction(tr("Modify password"), this);
     toolsMenu->addAction(modAct);
     connect(modAct, SIGNAL(triggered()), table, SLOT(modAction()));
     delAct = new QAction(tr("Delete password"), this);
